@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotter - About</title>
+
+    <style>
+        /* Basic Reset */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            height: 100%;
+            background-image: url("{{ url_for('static', filename='images/about.jpeg') }}"); /* About page background image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #133E87; /* Deep Blue Text */
+            overflow: hidden;
+        }
+
+        /* Navbar Styling */
+        nav {
+            background-color: #F3F3E0; /* Light Cream background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 0;
+            backdrop-filter: blur(10px); /* Glassmorphism effect */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav a {
+            color: #133E87; /* Deep Blue Text */
+            text-decoration: none;
+            padding: 12px 20px;
+            margin: 0 15px;
+            font-size: 18px;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        nav a:hover {
+            background-color: rgba(96, 139, 193, 0.3); /* Hover effect with light blue */
+            transform: scale(1.05);
+        }
+
+        /* Main Container Styling for Info Sections */
+        .info-container {
+            position: relative;
+            width: 80%;
+            height: 80vh;
+            margin: 5vh auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            gap: 30px; /* Space between sections */
+        }
+
+        /* Each Section Style */
+        .info-section {
+            width: 30%;
+            background: rgba(255, 255, 255, 0.3); /* Light transparent background */
+            backdrop-filter: blur(15px); /* Blur effect */
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-section h3 {
+            font-size: 2em;
+            color: #133E87;
+            margin-bottom: 15px;
+        }
+
+        .info-section p {
+            font-size: 1.1em;
+            color: #133E87;
+            line-height: 1.6;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .info-container {
+                flex-direction: column; /* Stack sections on smaller screens */
+            }
+
+            .info-section {
+                width: 80%; /* Full width for each section */
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/spots">Spots</a>
+        {% if session.get('user_id') %}
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/register">Register</a>
+        {% endif %}
+        <a href="/login">Login</a>
+        <a href="/bookings">Bookings</a>
+    </nav>
+    
+    <!-- Main Info Container with horizontal layout -->
+    <div class="info-container">
+        <div class="info-section">
+            <h3>Nord VPN</h3>
+            <p>That is the best hidden advertisment for NordVPN , the best VPN for everything , browse securly anywhere you want without a risk to be detected. Choose safety , Choose NordVPN.</p>
+        </div>
+
+        <div class="info-section">
+            <h3>Our Mission</h3>
+            <p>Our mission is to inspire outdoor enthusiasts to explore new places and enjoy unforgettable experiences. We aim to create a community of explorers who share their experiences and recommendations with each other.</p>
+        </div>
+
+        <div class="info-section">
+            <h3>How It Works</h3>
+            <p>Simply sign up, browse our recommended spots, read reviews from fellow adventurers, and start planning your next journey. With personalized recommendations, finding your next adventure has never been easier.</p>
+        </div>
+    </div>
+
+</body>
+</html>

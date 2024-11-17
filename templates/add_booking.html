@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Spot - Spotter</title>
+
+    <style>
+        /* Basic Reset */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            height: 100%;
+            background-color: #F3F3E0; /* Light cream background */
+            color: #133E87; /* Deep Blue Text */
+            overflow-y: auto;
+        }
+
+        /* Navbar Styling */
+        nav {
+            background-color: #133E87; /* Deep Blue background */
+            color: #CBDCEB; /* Light Grayish Blue text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 0;
+            backdrop-filter: blur(10px); /* Glassmorphism effect */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav a {
+            color: #CBDCEB; /* Light Grayish Blue text */
+            text-decoration: none;
+            padding: 12px 20px;
+            margin: 0 15px;
+            font-size: 18px;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        nav a:hover {
+            background-color: rgba(96, 139, 193, 0.3); /* Hover effect with light blue */
+            transform: scale(1.05);
+        }
+
+        /* Main Container Styling */
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 80%;
+            height: auto;
+            margin: 5vh auto;
+            padding-top: 60px; /* For navbar offset */
+        }
+
+        /* Booking Form Styling */
+        .booking-form {
+            background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #133E87; /* Deep Blue Text */
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 8px;
+            text-align: left;
+            color: #133E87; /* Deep Blue Text */
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4caf50; /* Green border */
+            background-color: #ffffff;
+        }
+
+        .submit-btn {
+            padding: 12px 24px;
+            font-size: 20px;
+            color: white;
+            background-color: #4caf50; /* Green background */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049; /* Darker green */
+        }
+
+        /* Styling for the clock display */
+        #display-time {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #133E87; /* Deep Blue Text */
+        }
+
+        /* Styling for the login link */
+        p {
+            font-size: 18px;
+            color: #333;
+        }
+
+        p a {
+            color: #4caf50; /* Green link */
+            text-decoration: none;
+        }
+
+        p a:hover {
+            text-decoration: underline;
+        }
+
+        /* Button Styling */
+        .cta-button {
+            background: rgba(96, 139, 193, 0.6);
+            color: #133E87;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin-top: 30px;
+            display: inline-block;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            opacity: 1;
+        }
+
+        .cta-button:hover {
+            background: rgba(96, 139, 193, 0.8);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/spots">Spots</a>
+        {% if session.get('user_id') %}
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/register">Register</a>
+        {% endif %}
+        <a href="/login">Login</a>
+        <a href="/bookings">Bookings</a>
+    </nav>
+
+    <!-- Booking Form -->
+    <div class="container">
+        <div class="booking-form">
+            <h1>Book Spot: {{ spot.name }}</h1>
+
+            <form method="POST">
+                <div class="form-group">
+                    <label for="start_time">Start Time:</label>
+                    <input type="datetime-local" id="start_time" name="start_time" required>
+                </div>
+                <div class="form-group">
+                    <label for="end_time">End Time:</label>
+                    <input type="datetime-local" id="end_time" name="end_time" required>
+                </div>
+                
+                <div class="form-group">
+                    <p id="display-time" style="font-size: 20px;"></p> <!-- Display selected time here -->
+                </div>
+
+                <button type="submit" class="submit-btn">Book Now</button>
+            </form>
+
+            {% if 'user_id' not in session %}
+                <p style="text-align: center;">You must be <a href="{{ url_for('login') }}">logged in</a> to book a spot.</p>
+            {% endif %}
+        </div>
+
+        <a href="/" class="cta-button">Back to Home</a>
+    </div>
+
+    <script>
+        // Display selected time in clock format
+        function formatTime(date) {
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+
+        // Event listener for start and end time inputs
+        const startInput = document.getElementById('start_time');
+        const endInput = document.getElementById('end_time');
+        const displayTime = document.getElementById('display-time');
+
+        function updateDisplayedTime() {
+            const startDate = new Date(startInput.value);
+            const endDate = new Date(endInput.value);
+            if (!isNaN(startDate)) {
+                displayTime.textContent = `Start Time: ${formatTime(startDate)} | End Time: ${formatTime(endDate)}`;
+            }
+        }
+
+        // Add event listeners to input fields to update the time display
+        startInput.addEventListener('input', updateDisplayedTime);
+        endInput.addEventListener('input', updateDisplayedTime);
+    </script>
+
+</body>
+</html>

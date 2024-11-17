@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spot Details - Spotter</title>
+
+    <style>
+        /* Global styles */
+        body {
+            background-color: #608BC1;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #133E87;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Navbar styling */
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            background-color: #F3F3E0;
+            padding: 15px;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #133E87;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Glassmorphism Style for containers */
+        .info-box, .weather-box, .bookings-box, .reviews-box, .review-form, .map-box {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 40px;
+            width: 80%;
+            max-width: 900px;
+        }
+
+        /* Weather forecast container */
+        .forecast-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .forecast-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 120px;
+            min-height: 180px;
+            transition: transform 0.3s ease, opacity 0.5s ease;
+        }
+
+        .forecast-item img {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
+        }
+
+        .forecast-item p {
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        /* Booking button centered */
+        .booking-button {
+            display: inline-block;
+            background-color: #133E87;
+            color: white;
+            text-decoration: none;
+            padding: 15px 35px;
+            border-radius: 50px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .booking-button:hover {
+            background-color: #0f2c6d;
+            transform: scale(1.05);
+        }
+
+        /* Reviews section styling */
+        .review-form form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .review-form label {
+            font-weight: bold;
+            color: #133E87;
+        }
+
+        .review-form input, .review-form textarea, .review-form button {
+            font-family: 'Poppins', sans-serif;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 12px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .review-form textarea {
+            resize: none;
+        }
+
+        .review-form button {
+            background-color: #133E87;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .review-form button:hover {
+            background-color: #0f2c6d;
+        }
+
+        /* Map container */
+        .map-box {
+            height: 400px;
+            margin-top: 40px;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        /* Future bookings styling */
+        .bookings-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .bookings-box li {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .bookings-box strong {
+            font-weight: bold;
+            color: #133E87;
+        }
+
+        /* Page content container */
+        .content {
+            padding-top: 120px; /* To account for fixed navbar */
+            padding-left: 30px;
+            padding-right: 30px;
+            text-align: center;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: #133E87;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .content {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .forecast-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .forecast-item {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/spots">Spots</a>
+        {% if session.get('user_id') %}
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/register">Register</a>
+        {% endif %}
+        <a href="/login">Login</a>
+        <a href="/bookings">Bookings</a>
+    </nav>
+
+    <div class="content">
+        <h1>Spot Details</h1>
+
+        <!-- Spot Basic Info -->
+        <div class="info-box">
+            <h2>{{ spot.name }}</h2>
+            <p>{{ spot.description }}</p>
+            <p><strong>Latitude:</strong> {{ spot.latitude }}</p>
+            <p><strong>Longitude:</strong> {{ spot.longitude }}</p>
+            <p><strong>Booking Required:</strong> {{ 'Yes' if spot.booking_required else 'No' }}</p>
+            <p><strong>Car Park Available:</strong> {{ 'Yes' if spot.car_park else 'No' }}</p>
+            <p><strong>Outdoor:</strong> {{ 'Yes' if spot.outdoor else 'No' }}</p>
+        </div>
+
+        <!-- Weather Forecast -->
+        <div class="weather-box">
+            <h3>14-Day Weather Forecast</h3>
+            <div class="forecast-container">
+                {% for day in weather_forecast %}
+                    <div class="forecast-item">
+                        <img src="https://openweathermap.org/img/wn/{{ day.icon }}.png" alt="{{ day.conditions }}">
+                        <p>{{ day.date }}</p>
+                        <p>{{ day.temperature }}°C</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Future Bookings -->
+        <div class="bookings-box">
+            <h3>Future Bookings</h3>
+            {% if booked_users %}
+                <ul>
+                    {% for booking in booked_users %}
+                        <li>
+                            <strong>{{ booking.user.username }}</strong><br>
+                            <strong>Booking Time:</strong> {{ booking.start_time }} - {{ booking.end_time }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No future bookings for this spot yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Booking Button (Centered) -->
+        {% if 'user_id' in session %}
+            <a href="{{ url_for('add_booking', spot_id=spot.id) }}" class="booking-button">Book This Spot</a>
+        {% else %}
+            <p>Please <a href="{{ url_for('login', next=request.url) }}">login</a> to make a booking.</p>
+        {% endif %}
+
+        <!-- Reviews -->
+        <div class="reviews-box">
+            <h3>Reviews</h3>
+            {% if reviews %}
+                <ul>
+                    {% for review in reviews %}
+                        <li>
+                            <strong>{{ review.user.username }} (Rating: {{ review.rating }})</strong><br>
+                            <p>{{ review.comment }}</p>
+                            <small>Reviewed on: {{ review.formatted_created_at() }}</small>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No reviews yet. Be the first to review this spot!</p>
+            {% endif %}
+        </div>
+
+        <!-- Add Review Form -->
+        {% if 'user_id' in session %}
+            <div class="review-form">
+                <h3>Add Your Review</h3>
+                <form method="POST">
+                    <label for="rating">Rating (1-5):</label>
+                    <input type="number" id="rating" name="rating" min="1" max="5" required>
+                    <label for="comment">Comment:</label>
+                    <textarea id="comment" name="comment" rows="4" required></textarea>
+                    <button type="submit">Submit Review</button>
+                </form>
+            </div>
+        {% else %}
+            <p>Please <a href="{{ url_for('login', next=request.url) }}">login</a> to leave a review.</p>
+        {% endif %}
+
+        <!-- Map Container -->
+        <div class="map-box">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS for Map -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script>
+        const latitude = {{ spot.latitude }};
+        const longitude = {{ spot.longitude }};
+        var map = L.map('map').setView([latitude, longitude], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        L.marker([latitude, longitude]).addTo(map)
+            .bindPopup(`<b>{{ spot.name }}</b><br>{{ spot.description }}`)
+            .openPopup();
+    </script>
+</body>
+</html>

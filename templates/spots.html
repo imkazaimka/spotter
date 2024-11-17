@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spots - Spotter</title>
+
+    <style>
+        /* Global styles */
+        body {
+            background: linear-gradient(135deg, #608BC1, #CBDCEB); /* Gradient background from #608BC1 to #CBDCEB */
+            font-family: 'Poppins', sans-serif; /* Modern clean font */
+            margin: 0;
+            padding: 0;
+            color: #133E87; /* Text color */
+        }
+
+        /* Navbar styling */
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            background: #F3F3E0; /* Navbar background color */
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #133E87; /* Text color for links */
+            font-size: 18px;
+            font-weight: 600;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Content Area */
+        .content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 36px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Spot Containers with Glassmorphism */
+        #spots-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        #spots-list li {
+            background: rgba(255, 255, 255, 0.2); /* Transparent background */
+            border-radius: 10px;
+            padding: 20px;
+            width: 250px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Stronger blur effect */
+            backdrop-filter: blur(20px); /* Stronger blur effect */
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+
+        #spots-list li:hover {
+            transform: scale(1.05);
+        }
+
+        /* Styling for sorting and activity filter buttons */
+        #sortButton, .checkbox-btn {
+            background: rgba(255, 255, 255, 0.2); /* Transparent background */
+            color: #133E87; /* Text color update */
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            backdrop-filter: blur(10px);
+            margin-top: 10px;
+        }
+
+        .checkbox-btn:hover, #sortButton:hover {
+            background: rgba(255, 255, 255, 0.4); /* Hover effect */
+        }
+
+        .checkbox-btn input:checked + span {
+            background: rgba(255, 255, 255, 0.6); /* Active filter button */
+            color: #2575fc;
+        }
+
+        .sort-options {
+            background: rgba(255, 255, 255, 0.2); /* Transparent background */
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 10px;
+            backdrop-filter: blur(20px); /* Stronger blur effect */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        select, input[type="number"], button {
+            background: rgba(255, 255, 255, 0.2);
+            color: #133E87; /* Text color update */
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        button[type="submit"]:hover {
+            background: #6a11cb;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/spots">Spots</a>
+        {% if session.get('user_id') %}
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/register">Register</a>
+        {% endif %}
+        <a href="/login">Login</a>
+        <a href="/bookings">Bookings</a>
+    </nav>
+
+    <div class="content">
+        <h1>All Spots</h1>
+
+        <!-- Sort Button (visible by default) -->
+        <button id="sortButton" onclick="toggleSortOptions()">Sort</button>
+
+        <!-- Sorting and Activity Options (hidden by default) -->
+        <div id="sortOptions" style="display: none;">
+            <form method="get" action="{{ url_for('all_spots') }}">
+                <div id="activityFilters" style="display: none;">
+                    <label>Activities:</label>
+                    <div class="checkbox-buttons">
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="activities" value="hiking" {% if 'hiking' in selected_activities %}checked{% endif %}> Hiking
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="activities" value="biking" {% if 'biking' in selected_activities %}checked{% endif %}> Biking
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="activities" value="fishing" {% if 'fishing' in selected_activities %}checked{% endif %}> Fishing
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="activities" value="camping" {% if 'camping' in selected_activities %}checked{% endif %}> Camping
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="activities" value="climbing" {% if 'climbing' in selected_activities %}checked{% endif %}> Climbing
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="activities" value="kayaking" {% if 'kayaking' in selected_activities %}checked{% endif %}> Kayaking
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="activities" value="swimming" {% if 'swimming' in selected_activities %}checked{% endif %}> Swimming
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="activities" value="picnic_area" {% if 'picnic_area' in selected_activities %}checked{% endif %}> Picnic Area
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="activities" value="wildlife_watching" {% if 'wildlife_watching' in selected_activities %}checked{% endif %}> Wildlife Watching
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="activities" value="photography" {% if 'photography' in selected_activities %}checked{% endif %}> Photography
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="activities" value="bbq" {% if 'bbq' in selected_activities %}checked{% endif %}> BBQ
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="activities" value="campsite" {% if 'campsite' in selected_activities %}checked{% endif %}> Campsite
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Sorting Options -->
+                <div class="sort-options">
+                    <label for="sort_by">Sort By:</label>
+                    <select name="sort_by" id="sort_by">
+                        <option value="name" {% if request.args.get('sort_by') == 'name' %}selected{% endif %}>Name</option>
+                        <option value="longitude" {% if request.args.get('sort_by') == 'longitude' %}selected{% endif %}>Longitude</option>
+                        <option value="latitude" {% if request.args.get('sort_by') == 'latitude' %}selected{% endif %}>Latitude</option>
+                        <option value="distance" {% if request.args.get('sort_by') == 'distance' %}selected{% endif %}>Distance</option>
+                    </select>
+
+                    <label for="order">Order:</label>
+                    <select name="order" id="order">
+                        <option value="asc" {% if request.args.get('order') == 'asc' %}selected{% endif %}>Ascending</option>
+                        <option value="desc" {% if request.args.get('order') == 'desc' %}selected{% endif %}>Descending</option>
+                    </select>
+
+                    <label for="distance_range">Distance Range (km):</label>
+                    <input type="number" name="distance_range" id="distance_range" min="0" step="1" value="{{ distance_range or '' }}">
+                </div>
+
+                <!-- Hidden fields to store user location -->
+                <input type="hidden" name="lat" id="lat" value="{{ user_lat or '' }}">
+                <input type="hidden" name="lon" id="lon" value="{{ user_lon or '' }}">
+
+                <button type="submit">Apply Filters</button>
+            </form>
+        </div>
+
+        <!-- List of Spots -->
+        <ul id="spots-list">
+            {% for spot_data in spots_with_avg_reviews %}
+                <li>
+                    <h3>
+                        <a href="{{ url_for('spot_by_id', spot_id=spot_data['spot'].id) }}">{{ spot_data['spot'].name }}</a>
+                        {% if spot_data.distance is not none %}
+                            - {{ spot_data.distance | round(2) }} km away
+                        {% else %}
+                            (Distance not available)
+                        {% endif %}
+                    </h3>
+                    <p>{{ spot_data['spot'].description }}</p>
+                    <p>Average Rating: 
+                        {% if spot_data['avg_rating'] %}
+                            {{ spot_data['avg_rating'] | round(2) }} / 5
+                        {% else %}
+                            No reviews yet
+                        {% endif %}
+                    </p>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <script>
+            // Toggle the sorting and activity filter visibility
+            function toggleSortOptions() {
+                const sortOptions = document.getElementById("sortOptions");
+                const activityFilters = document.getElementById("activityFilters");
+
+                // Toggle visibility
+                if (sortOptions.style.display === "none") {
+                    sortOptions.style.display = "block";
+                    activityFilters.style.display = "block";
+                } else {
+                    sortOptions.style.display = "none";
+                    activityFilters.style.display = "none";
+                }
+            }
+
+            // Automatically fetch user's location if allowed
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    document.getElementById("lat").value = position.coords.latitude;
+                    document.getElementById("lon").value = position.coords.longitude;
+                });
+            }
+        </script>
+
+</body>
+</html>

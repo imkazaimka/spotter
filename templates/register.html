@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Spotter</title>
+    <style>
+        /* Color Palette */
+        :root {
+            --light-bg: #F3F3E0;
+            --primary-color: #133E87;
+            --secondary-color: #608BC1;
+            --accent-color: #CBDCEB;
+        }
+
+        /* Global Styles */
+        body {
+            background-color: var(--accent-color);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Navbar styles */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--light-bg);
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: 600;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Adjust page content to avoid overlapping with navbar */
+        .content {
+            margin-top: 80px; /* Push content down to avoid overlap with fixed navbar */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        /* Register Page Specific */
+        .register-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-height: 100vh;
+            background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent background */
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.3); /* Transparent background */
+            backdrop-filter: blur(10px); /* Glassmorphism effect */
+            border-radius: 15px;
+            padding: 40px 60px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            width: 70%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            filter: blur(15px);
+            z-index: -1;
+        }
+
+        .register-page label,
+        .register-page button {
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--primary-color);
+        }
+
+        .register-page input {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 18px;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.8); /* Light background for input */
+            transition: background-color 0.3s ease;
+        }
+
+        .register-page input:focus {
+            background-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 96, 255, 0.5);
+        }
+
+        .register-page button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            padding: 15px;
+            font-size: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .register-page button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.3s;
+            z-index: 0;
+            filter: blur(10px);
+        }
+
+        .register-page button:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .register-page button:hover {
+            color: white;
+        }
+
+        .register-page button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .form-container {
+                width: 90%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/spots">Spots</a>
+        {% if session.get('user_id') %}
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/register">Register</a>
+        {% endif %}
+        <a href="/login">Login</a>
+        <a href="/bookings">Bookings</a>
+    </nav>
+
+    <div class="content register-page">
+        <div class="form-container">
+            <h2 style="text-align:center; color:var(--primary-color);">Create an Account</h2>
+            <form method="POST" action="/register">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+
+                <button type="submit"><span>Register</span></button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

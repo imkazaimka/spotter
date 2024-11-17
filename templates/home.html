@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotter</title>
+
+    <style>
+        /* Basic Reset */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            height: 100%;
+            background-image: url("{{ url_for('static', filename='images/home.jpeg') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #133E87; /* Deep Blue Text */
+            overflow: hidden;
+        }
+
+        /* Navbar Styling */
+        nav {
+            background-color: #F3F3E0; /* Light Cream background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 0;
+            backdrop-filter: blur(10px); /* Glassmorphism effect */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav a {
+            color: #133E87; /* Deep Blue Text */
+            text-decoration: none;
+            padding: 12px 20px;
+            margin: 0 15px;
+            font-size: 18px;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        nav a:hover {
+            background-color: rgba(96, 139, 193, 0.3); /* Hover effect with light blue */
+            transform: scale(1.05);
+        }
+
+        /* Main Container Styling */
+        .home-container {
+            position: relative;
+            width: 80%;
+            height: 80vh;
+            margin: 5vh auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: rgba(96, 139, 193, 0.4); /* Transparent blue */
+            backdrop-filter: blur(30px); /* Strong blur effect */
+            border-radius: 10px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Welcome Text Styling */
+        .welcome-text {
+            font-size: 3em;
+            color: #133E87; /* Deep Blue Text */
+            opacity: 1;
+            margin-bottom: 20px; /* Space between the text and button */
+        }
+
+        /* Button Styling */
+        .cta-button {
+            background: rgba(96, 139, 193, 0.6); /* Semi-transparent button */
+            color: #133E87; /* Deep Blue Text */
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin-top: 30px;
+            display: inline-block;
+            backdrop-filter: blur(15px); /* Glass effect */
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            opacity: 1;
+        }
+
+        .cta-button:hover {
+            background: rgba(96, 139, 193, 0.8); /* Darker blue on hover */
+            transform: scale(1.05);
+        }
+
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/spots">Spots</a>
+        {% if session.get('user_id') %}
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/register">Register</a>
+        {% endif %}
+        <a href="/login">Login</a>
+        <a href="/bookings">Bookings</a>
+    </nav>
+    
+    <div class="home-container">
+        <div class="welcome-text">Welcome to Spotter!</div>
+        <a href="/spots" class="cta-button">Discover More Spots</a>
+    </div>
+</body>
+</html>

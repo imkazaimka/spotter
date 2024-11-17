@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Add a New Spot</h2>
+    <form method="POST" action="{{ url_for('add_spot') }}">
+        <label for="name">Spot Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea><br><br>
+
+        <label for="longitude">Longitude:</label>
+        <input type="number" step="any" id="longitude" name="longitude" required><br><br>
+
+        <label for="latitude">Latitude:</label>
+        <input type="number" step="any" id="latitude" name="latitude" required><br><br>
+
+        <label for="booking_required">Booking Required:</label>
+        <input type="checkbox" id="booking_required" name="booking_required"><br><br>
+
+        <label for="car_park">Car Park:</label>
+        <input type="checkbox" id="car_park" name="car_park"><br><br>
+
+        <label for="outdoor">Outdoor:</label>
+        <input type="checkbox" id="outdoor" name="outdoor"><br><br>
+
+        <label for="hiking">Hiking:</label>
+        <input type="checkbox" id="hiking" name="hiking"><br><br>
+
+        <label for="biking">Biking:</label>
+        <input type="checkbox" id="biking" name="biking"><br><br>
+
+        <label for="fishing">Fishing:</label>
+        <input type="checkbox" id="fishing" name="fishing"><br><br>
+
+        <label for="camping">Camping:</label>
+        <input type="checkbox" id="camping" name="camping"><br><br>
+
+        <label for="climbing">Climbing:</label>
+        <input type="checkbox" id="climbing" name="climbing"><br><br>
+
+        <label for="kayaking">Kayaking:</label>
+        <input type="checkbox" id="kayaking" name="kayaking"><br><br>
+
+        <label for="swimming">Swimming:</label>
+        <input type="checkbox" id="swimming" name="swimming"><br><br>
+
+        <label for="picnic_area">Picnic Area:</label>
+        <input type="checkbox" id="picnic_area" name="picnic_area"><br><br>
+
+        <label for="wildlife_watching">Wildlife Watching:</label>
+        <input type="checkbox" id="wildlife_watching" name="wildlife_watching"><br><br>
+
+        <label for="photography">Photography:</label>
+        <input type="checkbox" id="photography" name="photography"><br><br>
+
+        <label for="bbq">BBQ:</label>
+        <input type="checkbox" id="bbq" name="bbq"><br><br>
+
+        <label for="campsite">Campsite:</label>
+        <input type="checkbox" id="campsite" name="campsite"><br><br>
+
+        <button type="submit">Add Spot</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings - Spotter</title>
+
+    <style>
+        /* Basic Reset */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            height: 100%;
+            background-color: #F3F3E0; /* Light Cream background */
+            color: #133E87; /* Deep Blue Text */
+            overflow-y: auto; /* Allows scrolling */
+        }
+
+        /* Navbar Styling */
+        nav {
+            background-color: #133E87; /* Deep Blue background */
+            color: #CBDCEB; /* Light Grayish Blue text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 0;
+            backdrop-filter: blur(10px); /* Glassmorphism effect */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav a {
+            color: #CBDCEB; /* Light Grayish Blue text */
+            text-decoration: none;
+            padding: 12px 20px;
+            margin: 0 15px;
+            font-size: 18px;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        nav a:hover {
+            background-color: rgba(96, 139, 193, 0.3); /* Hover effect with light blue */
+            transform: scale(1.05);
+        }
+
+        /* Main Container Styling */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 90%;
+            height: auto;
+            margin: 5vh auto;
+            padding-top: 60px; /* For navbar offset */
+        }
+
+        /* Text Section */
+        .text-section {
+            flex: 1;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.7); /* Light opaque background */
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-right: 20px;
+            overflow-y: auto;
+        }
+
+        h3 {
+            color: #133E87;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        p, li, a {
+            color: #333;
+            font-size: 20px;
+            line-height: 1.6;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .status-past {
+            background-color: #d3d3d3; /* Gray */
+            color: #555;
+        }
+
+        .status-current {
+            background-color: #98fb98; /* Light green */
+            color: #006400;
+        }
+
+        .status-future {
+            background-color: #add8e6; /* Light blue */
+            color: #00008b;
+        }
+
+        /* Image Section */
+        .image-section {
+            flex: 1;
+            background-image: url("{{ url_for('static', filename='images/bookings.jpeg') }}");
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .booking-title {
+            position: absolute;
+            color: #F3F3E0;
+            font-size: 60px;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: none; /* No text-shadow for a clean look */
+        }
+
+        /* Button Styling */
+        .cta-button {
+            background: rgba(96, 139, 193, 0.6);
+            color: #133E87;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin-top: 30px;
+            display: inline-block;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            opacity: 1;
+        }
+
+        .cta-button:hover {
+            background: rgba(96, 139, 193, 0.8);
+            transform: scale(1.05);
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 12px 30px;
+            margin-top: 20px;
+            border-radius: 25px;
+            background-color: rgba(96, 139, 193, 0.4);
+            color: #133E87;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 20px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: rgba(96, 139, 193, 0.6);
+            transform: scale(1.05);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/spots">Spots</a>
+        {% if session.get('user_id') %}
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/register">Register</a>
+        {% endif %}
+        <a href="/login">Login</a>
+        <a href="/bookings">Bookings</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="text-section">
+            {% if 'user_id' in session %}
+                <!-- Past Bookings Section -->
+                <h3>Past Bookings</h3>
+                {% if past_bookings %}
+                    <ul style="list-style-type: none; padding: 0;">
+                        {% for booking in past_bookings %}
+                            <li style="border-bottom: 2px solid #133E87; padding: 10px 0;">
+                                <strong>{{ booking.spot.name }}</strong><br>
+                                Start Time: {{ booking.start_time }}<br>
+                                End Time: {{ booking.end_time }}<br>
+                                Status: <span class="status status-past">Past</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No past bookings.</p>
+                {% endif %}
+
+                <!-- Current Bookings Section -->
+                <h3>Current Bookings</h3>
+                {% if current_bookings %}
+                    <ul style="list-style-type: none; padding: 0;">
+                        {% for booking in current_bookings %}
+                            <li style="border-bottom: 2px solid #133E87; padding: 10px 0;">
+                                <strong>{{ booking.spot.name }}</strong><br>
+                                Start Time: {{ booking.start_time }}<br>
+                                End Time: {{ booking.end_time }}<br>
+                                Status: <span class="status status-current">Current</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No current bookings.</p>
+                {% endif %}
+
+                <!-- Future Bookings Section -->
+                <h3>Future Bookings</h3>
+                {% if future_bookings %}
+                    <ul style="list-style-type: none; padding: 0;">
+                        {% for booking in future_bookings %}
+                            <li style="border-bottom: 2px solid #133E87; padding: 10px 0;">
+                                <strong>{{ booking.spot.name }}</strong><br>
+                                Start Time: {{ booking.start_time }}<br>
+                                End Time: {{ booking.end_time }}<br>
+                                Status: <span class="status status-future">Future</span><br>
+
+                                <!-- Weather Forecast Section -->
+                                {% if future_booking_weather[booking.id] %}
+                                    <h4>Weather Forecast:</h4>
+                                    <ul style="list-style-type: none; padding: 0;">
+                                        {% for day in future_booking_weather[booking.id] %}
+                                            <li style="padding: 5px 0;">
+                                                Date: {{ day.date }}<br>
+                                                {% if day.rain_or_snow %}
+                                                    {% if day.rain_or_snow.rain %}
+                                                        <strong style="color: #d9534f;">Rain expected</strong>
+                                                    {% elif day.rain_or_snow.snow %}
+                                                        <strong style="color: #5bc0de;">Snow expected</strong>
+                                                    {% endif %}
+                                                {% else %}
+                                                    No precipitation expected.
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p>Weather forecast not available yet.</p>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No future bookings.</p>
+                {% endif %}
+            {% else %}
+                <p>Please log in to view your bookings.</p>
+            {% endif %}
+            <a href="/" class="back-button">Back to Home</a>
+        </div>
+
+        <div class="image-section">
+            <div class="booking-title">Your Bookings</div>
+        </div>
+    </div>
+
+</body>
+</html>
